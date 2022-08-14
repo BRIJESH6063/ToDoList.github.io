@@ -4,32 +4,28 @@ const bodyParser = require("body-parser") ;
 const app = express() ;
 app.set('view engine', 'ejs');
 
+var items = ["Buy Food.", "Cook Food.", "Eat Food."] ;
+
+app.use(bodyParser.urlencoded({extended:true})) ;
 app.get("/", function(req, res){
      var today = new Date() ;
-     var CurrentDay = today.getDay() ;
-     var day = "" ;
 
-     switch(CurrentDay) {
-         case 0 : day = "SUNDAY" ;
-         break ;
-         case 1 : day = "MONDAY" ;
-         break ;
-         case 2 : day = "TUESDAY" ;
-         break ;
-         case 3 : day = "WEDNESDAY" ;
-         break ;
-         case 4 : day = "THURSDAY" ;
-         break ;
-         case 5 : day = "FRIDAY" ;
-         break ;
-         case 6 : day = "SATURDAY" ;
-         break ;
-         default : console.log("Error! current day is out of range!") ;
-     }
+     var options = {
+          weekday : "long",
+          day : "numeric",
+          month : "long"
+     } ;
+     var day = today.toLocaleDateString("en-US", options) ;
 
-     res.render("list", { kindOfDay : day} ) ;
+     res.render("list", { kindOfDay : day, newListItems : items } ) ;
 }) ;
 
+app.post("/", function(req, res){
+      item = req.body.newItem ;
+      items.push(item) ;
+      res.redirect("/") ;
+
+}) ;
 
 app.listen(3000, function(){
     console.log("Server is running at 3000.") ;
